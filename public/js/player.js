@@ -440,7 +440,7 @@
       const q = (query || "").trim().toLowerCase();
       const d_q = q.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
       list.innerHTML = "";
-      const hits = items.filter((i) => !q || String(i.label).toLowerCase().includes(q) || String(i.search).toLowerCase().includes(q) || String(i.v) === d_q);
+      const hits = items.filter((i) => !q || String(i.label).toLowerCase().includes(q) || String(i.v) === d_q);
       if (!hits.length) {
         const empty = document.createElement("div");
         empty.className = "picker-empty";
@@ -452,17 +452,7 @@
         const opt = document.createElement("button");
         opt.type = "button";
         opt.className = "picker-opt" + (String(item.v) === String(current) ? " on" : "");
-        const main = document.createElement("span");
-        main.className = "picker-opt-main";
-        main.textContent = item.label;
-        opt.appendChild(main);
-        if (item.sub) {
-          const sub = document.createElement("span");
-          sub.className = "picker-opt-sub";
-          sub.dir = "ltr";
-          sub.textContent = item.sub;
-          opt.appendChild(sub);
-        }
+        opt.textContent = item.label;
         opt.addEventListener("click", () => {
           current = item.v;
           value.textContent = labelOf(current);
