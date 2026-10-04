@@ -11,6 +11,43 @@
 @section('content')
 <div class="stream-root">
 
+    @if ($link)
+        <section class="dedication panel">
+            @if ($link->recipient_name)
+                <div class="type">{{ $dedicationTypes[$link->dedication_type] ?? 'صدقة عن' }}</div>
+                <h1 class="name">{{ $link->recipient_name }}</h1>
+            @else
+                <h1 class="name">{{ ($link->dedication_type === 'gift') ? 'هدية عامة' : 'صدقة عامة' }}</h1>
+            @endif
+            @if ($link->message)
+                <p class="message">«{{ $link->message }}»</p>
+            @endif
+            @if ($link->sender_name)
+                <div class="from">من <b>{{ $link->sender_name }}</b> بمحبة</div>
+            @endif
+            <div class="stats">
+                <b id="statAyahs">{{ ar_digits($link->ayahs_played) }}</b> آية تُليت ·
+                <b id="statKhatmas">{{ ar_digits($link->khatmas) }}</b> ختمة
+            </div>
+            @if (! $isNew)
+                <div class="share-row">
+                    <button class="btn small" id="shareCopy">نسخ الرابط</button>
+                    <a class="btn small" id="shareWa" href="#">مشاركة واتساب</a>
+                </div>
+            @endif
+        </section>
+    @else
+        <section class="dedication panel">
+            <div class="type">إذاعة صدقة</div>
+            <h1 class="name">القرآن الكريم</h1>
+            <p class="message">تلاوة متواصلة — قارئ يختم المصحف كاملًا ثم يتلوه القارئ التالي، بلا توقف.</p>
+            <div class="share-row">
+                <button class="btn small" id="shareCopy">نسخ الرابط</button>
+                <a class="btn small" id="shareWa" href="#">مشاركة واتساب</a>
+            </div>
+        </section>
+    @endif
+
     <section class="station panel" id="stationPanel">
         <div class="station-tabs" role="tablist" aria-label="نمط التشغيل">
             <button class="station-tab on" id="tabLive" role="tab" aria-selected="true" type="button">البث المباشر</button>
@@ -66,43 +103,6 @@
         </div>
     @endif
 
-    @if ($link)
-        <section class="dedication panel">
-            @if ($link->recipient_name)
-                <div class="type">{{ $dedicationTypes[$link->dedication_type] ?? 'صدقة عن' }}</div>
-                <h1 class="name">{{ $link->recipient_name }}</h1>
-            @else
-                <h1 class="name">{{ ($link->dedication_type === 'gift') ? 'هدية عامة' : 'صدقة عامة' }}</h1>
-            @endif
-            @if ($link->message)
-                <p class="message">«{{ $link->message }}»</p>
-            @endif
-            @if ($link->sender_name)
-                <div class="from">من <b>{{ $link->sender_name }}</b> بمحبة</div>
-            @endif
-            <div class="stats">
-                <b id="statAyahs">{{ ar_digits($link->ayahs_played) }}</b> آية تُليت ·
-                <b id="statKhatmas">{{ ar_digits($link->khatmas) }}</b> ختمة ·
-                <b>{{ ar_digits($link->views) }}</b> زيارة
-            </div>
-            @if (! $isNew)
-                <div class="share-row">
-                    <button class="btn small" id="shareCopy">نسخ الرابط</button>
-                    <a class="btn small" id="shareWa" href="#">مشاركة واتساب</a>
-                </div>
-            @endif
-        </section>
-    @else
-        <section class="dedication panel">
-            <div class="type">إذاعة صدقة</div>
-            <h1 class="name">القرآن الكريم</h1>
-            <p class="message">تلاوة متواصلة — قارئ يختم المصحف كاملًا ثم يتلوه القارئ التالي، بلا توقف.</p>
-            <div class="share-row">
-                <button class="btn small" id="shareCopy">نسخ الرابط</button>
-                <a class="btn small" id="shareWa" href="#">مشاركة واتساب</a>
-            </div>
-        </section>
-    @endif
 
 
 </div>
