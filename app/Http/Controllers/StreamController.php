@@ -77,10 +77,10 @@ class StreamController extends Controller
             'clientPayload' => [
                 'counts' => collect($quran->chapters())->pluck('verses_count')->all(),
                 'chapters' => collect($quran->chapters())
-                    ->map(fn ($c) => ['id' => $c['id'], 'na' => $c['name_arabic']])
+                    ->map(fn ($c) => ['id' => $c['id'], 'na' => $c['name_arabic'], 'n' => $c['name_simple']])
                     ->all(),
                 'reciters' => collect(config('quran.reciters'))
-                    ->map(fn ($r) => ['id' => $r['id'], 'ar' => $r['ar'], 'surah_sources' => $r['surah_sources']])
+                    ->map(fn ($r) => ['id' => $r['id'], 'ar' => $r['ar'], 'name' => $r['name'], 'surah_sources' => $r['surah_sources']])
                     ->all(),
                 'rotation' => $link?->rotation,
                 'link' => $link ? [

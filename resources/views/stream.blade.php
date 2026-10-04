@@ -50,7 +50,7 @@
     <section class="station panel" id="stationPanel">
         <div class="station-tabs" role="tablist" aria-label="نمط التشغيل">
             <button class="station-tab on" id="tabLive" role="tab" aria-selected="true" type="button">البث المباشر</button>
-            <button class="station-tab" id="tabManual" role="tab" aria-selected="false" type="button">تشغيل يدوي</button>
+            <button class="station-tab" id="tabManual" role="tab" aria-selected="false" type="button">اختر سورة</button>
         </div>
 
         <div class="live-chip" id="liveChip"><i></i><span>مباشر</span></div>
@@ -89,7 +89,7 @@
                     <div class="picker-list" role="listbox"></div>
                 </div>
             </div>
-            <p class="picker-hint">اختر السورة والقارئ وستبدأ التلاوة فورًا — تُشغَّل لك وحدك.</p>
+            <p class="picker-hint">اختر السورة والقارئ كما تحب، وتبدأ التلاوة لك وحدك فورًا.</p>
         </div>
     </section>
 
@@ -132,5 +132,5 @@
 <script>
     window.__QURAN__ = @json($clientPayload);
 </script>
-<script src="/js/player.js?v=18" defer></script>
+<script src="/js/player.js?v=19" defer></script>
 @endpush

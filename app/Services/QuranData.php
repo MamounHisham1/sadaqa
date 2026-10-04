@@ -28,7 +28,7 @@ class QuranData
                 $this->chapters = collect(config('quran.surahs'))
                     ->map(fn ($s, $i) => [
                         'id' => $s['id'],
-                        'name_simple' => '',
+                        'name_simple' => $s['en'],
                         'name_arabic' => $s['na'],
                         'translated_name' => '',
                         'verses_count' => $s['count'],

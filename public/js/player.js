@@ -300,7 +300,7 @@
     if (!chip) return;
     const live = state.mode === "live";
     chip.classList.toggle("off", !live);
-    chip.querySelector("span").textContent = live ? "مباشر" : "استماع منفرد";
+    chip.querySelector("span").textContent = live ? "مباشر" : "تشغيل خاص";
     setTab(state.mode !== "live");
   }
 
@@ -440,7 +440,7 @@
       const q = (query || "").trim().toLowerCase();
       const d_q = q.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
       list.innerHTML = "";
-      const hits = items.filter((i) => !q || String(i.label).toLowerCase().includes(q) || String(i.v) === d_q);
+      const hits = items.filter((i) => !q || String(i.label).toLowerCase().includes(q) || String(i.search).toLowerCase().includes(q) || String(i.v) === d_q);
       if (!hits.length) {
         const empty = document.createElement("div");
         empty.className = "picker-empty";
@@ -452,7 +452,17 @@
         const opt = document.createElement("button");
         opt.type = "button";
         opt.className = "picker-opt" + (String(item.v) === String(current) ? " on" : "");
-        opt.textContent = item.label;
+        const main = document.createElement("span");
+        main.className = "picker-opt-main";
+        main.textContent = item.label;
+        opt.appendChild(main);
+        if (item.sub) {
+          const sub = document.createElement("span");
+          sub.className = "picker-opt-sub";
+          sub.dir = "ltr";
+          sub.textContent = item.sub;
+          opt.appendChild(sub);
+        }
         opt.addEventListener("click", () => {
           current = item.v;
           value.textContent = labelOf(current);
@@ -486,7 +496,7 @@
 
   makePicker(
     $("#surahPicker"),
-    CFG.chapters.map((c) => ({ v: c.id, label: `${toAr(c.id)} · ${c.na}` })),
+    CFG.chapters.map((c) => ({ v: c.id, label: `${toAr(c.id)} · ${c.na}`, sub: c.n || "", search: `${c.id} ${c.na} ${c.n || ""}` })),
     state.surah,
     (surah) => {
       state.mode = "ondemand";
@@ -497,7 +507,7 @@
 
   makePicker(
     $("#reciterPicker"),
-    CFG.reciters.map((r) => ({ v: r.id, label: r.ar })),
+    CFG.reciters.map((r) => ({ v: r.id, label: r.ar, sub: r.name || "", search: `${r.ar} ${r.name || ""}` })),
     state.reciterId,
     (reciterId) => {
       if (state.mode !== "ondemand") {

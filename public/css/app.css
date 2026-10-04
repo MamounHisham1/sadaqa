@@ -690,3 +690,12 @@ html { -webkit-text-size-adjust: 100%; }
 .play-main.is-playing .i-play { display: none; }
 
 .manual-controls[hidden] { display: none; }
+
+.picker-opt { text-align: start; }
+.picker-opt-main { display: block; }
+.picker-opt-sub {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 1px;
+}
