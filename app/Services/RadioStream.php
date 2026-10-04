@@ -146,9 +146,10 @@ class RadioStream
             $known = DB::table('surah_durations')
                 ->where('reciter_id', $reciterId)
                 ->pluck('seconds', 'surah');
+            $heuristic = $this->heuristics();
             $out = [];
-            foreach ($this->heuristics() as $surah => $seconds) {
-                $out[$surah] = (float) ($known[$surah] ?? $seconds);
+            foreach (range(1, config('quran.total_surahs')) as $surah) {
+                $out[$surah] = (float) ($known[$surah] ?? $heuristic[$surah] ?? 3000);
             }
             ksort($out);
 
@@ -156,23 +157,17 @@ class RadioStream
         });
     }
 
-    /** Fallback schedule estimated from surah text length. */
+    /**
+     * Fallback schedule from canonical ayah counts (~32s/ayah at murattal
+     * pace). Needs no fetched files, so the radio works out of the box;
+     * probed durations replace it via quran:warm-durations.
+     */
     public function heuristics(): array
     {
         return Cache::remember('radio:heuristics', 86400, function () {
-            $chars = [];
-            foreach ($this->quran->chapters() as $c) {
-                $chars[$c['id']] = 0;
-            }
-            foreach ($this->quran->allVerses() as $key => $text) {
-                $s = (int) $key;
-                $chars[$s] += mb_strlen($text, 'UTF-8');
-            }
             $out = [];
-            foreach ($chars as $s => $n) {
-                // Uthmani text includes harakat code points; 0.13 s/char lands
-                // near a typical murattal pace until real probes land.
-                $out[$s] = max(8.0, $n * 0.13);
+            foreach (config('quran.surahs') as $surah) {
+                $out[$surah['id']] = max(8.0, $surah['count'] * 32);
             }
             ksort($out);
 

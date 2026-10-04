@@ -13,13 +13,30 @@ class QuranData
         return storage_path('app/quran');
     }
 
+    /**
+     * Surah metadata (id, name_arabic, verses_count, ...). Reads the fetched
+     * mushaf files when present; otherwise falls back to the canonical surah
+     * table baked into config/quran.php so the radio never depends on them.
+     */
     public function chapters(): array
     {
         if ($this->chapters === null) {
             $path = $this->dir().'/chapters.json';
-            $this->chapters = File::exists($path)
-                ? json_decode(File::get($path), true)
-                : [];
+            if (File::exists($path)) {
+                $this->chapters = json_decode(File::get($path), true);
+            } else {
+                $this->chapters = collect(config('quran.surahs'))
+                    ->map(fn ($s, $i) => [
+                        'id' => $s['id'],
+                        'name_simple' => '',
+                        'name_arabic' => $s['na'],
+                        'translated_name' => '',
+                        'verses_count' => $s['count'],
+                        'first_page' => 1,
+                        'revelation' => 'makkah',
+                    ])
+                    ->all();
+            }
         }
 
         return $this->chapters;
@@ -35,7 +52,7 @@ class QuranData
         return File::exists($path) ? json_decode(File::get($path), true) : null;
     }
 
-    /** verse_key => uthmani text, for all 6236 ayahs. */
+    /** verse_key => uthmani text, for all 6236 ayahs (empty without quran:fetch). */
     public function allVerses(): array
     {
         $out = [];
@@ -46,27 +63,5 @@ class QuranData
         }
 
         return $out;
-    }
-
-    /**
-     * Compact payload injected into the player for client-side bootstrapping.
-     */
-    public function clientMeta(): array
-    {
-        $chapters = collect($this->chapters());
-
-        return [
-            'totalVerses' => config('quran.total_verses'),
-            'totalPages' => config('quran.total_pages'),
-            'counts' => $chapters->pluck('verses_count')->all(),
-            'firstPage' => $chapters->pluck('first_page')->all(),
-            'chapters' => $chapters->map(fn ($c) => [
-                'id' => $c['id'],
-                'n' => $c['name_simple'],
-                'na' => $c['name_arabic'],
-                'tn' => $c['translated_name'],
-                'rev' => $c['revelation'] ?? 'makkah',
-            ])->all(),
-        ];
     }
 }
