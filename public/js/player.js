@@ -276,8 +276,7 @@
         body: JSON.stringify({ ayahs: n }),
       });
       const data = await res.json();
-      if (data.ok && $("#statAyahs")) {
-        $("#statAyahs").textContent = toAr(data.ayahs_played);
+      if (data.ok && $("#statKhatmas")) {
         $("#statKhatmas").textContent = toAr(Math.floor(data.ayahs_played / 6236));
       }
     } catch { /* best-effort */ }

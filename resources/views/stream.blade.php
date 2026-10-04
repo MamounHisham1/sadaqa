@@ -26,8 +26,7 @@
                 <div class="from">من <b>{{ $link->sender_name }}</b> بمحبة</div>
             @endif
             <div class="stats">
-                <b id="statAyahs">{{ ar_digits($link->ayahs_played) }}</b> آية تُليت ·
-                <b id="statKhatmas">{{ ar_digits($link->khatmas) }}</b> ختمة
+                <b id="statKhatmas">{{ ar_digits($link->khatmas) }}</b> ختمة كاملة
             </div>
             @if (! $isNew)
                 <div class="share-row">
