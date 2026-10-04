@@ -11,6 +11,52 @@
 @section('content')
 <div class="stream-root">
 
+    <section class="station panel" id="stationPanel">
+        <div class="station-tabs" role="tablist" aria-label="نمط التشغيل">
+            <button class="station-tab on" id="tabLive" role="tab" aria-selected="true" type="button">البث المباشر</button>
+            <button class="station-tab" id="tabManual" role="tab" aria-selected="false" type="button">تشغيل يدوي</button>
+        </div>
+
+        <div class="live-chip" id="liveChip"><i></i><span>مباشر</span></div>
+        <div class="station-surah ar" id="npSurahAr">جارٍ الاتصال بالإذاعة…</div>
+        <div class="station-meta">
+            <span id="npReciter">—</span>
+            <span id="npKhatma"></span>
+        </div>
+
+        <div class="station-player">
+            <button class="play-main" id="playBtn" title="تشغيل / إيقاف (مسافة)" aria-label="تشغيل أو إيقاف">
+                <svg class="i-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                <svg class="i-pause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+            </button>
+            <div class="station-progress"><i id="ayahProgress"></i></div>
+        </div>
+
+        <div class="manual-controls" id="manualControls" hidden>
+            <div class="picker" id="surahPicker">
+                <button class="picker-btn" type="button" aria-haspopup="listbox">
+                    <span class="picker-value">—</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="picker-menu" hidden>
+                    <input class="picker-search" type="text" placeholder="ابحث عن سورة…" aria-label="ابحث عن سورة">
+                    <div class="picker-list" role="listbox"></div>
+                </div>
+            </div>
+            <div class="picker" id="reciterPicker">
+                <button class="picker-btn" type="button" aria-haspopup="listbox">
+                    <span class="picker-value">—</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="picker-menu" hidden>
+                    <input class="picker-search" type="text" placeholder="ابحث عن قارئ…" aria-label="ابحث عن قارئ">
+                    <div class="picker-list" role="listbox"></div>
+                </div>
+            </div>
+            <p class="picker-hint">اختر السورة والقارئ وستبدأ التلاوة فورًا — تُشغَّل لك وحدك.</p>
+        </div>
+    </section>
+
     @if ($isNew && $link)
         <div class="success-banner">
             <span>الرابط جاهز — شاركه:</span>
@@ -58,42 +104,7 @@
         </section>
     @endif
 
-    <section class="station panel">
-        <div class="live-chip" id="liveChip"><i></i><span>مباشر</span></div>
-        <div class="station-surah ar" id="npSurahAr">اضغط زر التشغيل للانضمام</div>
-        <div class="station-meta">
-            <span id="npReciter">—</span>
-            <span id="npKhatma"></span>
-        </div>
-        <button class="live-return" id="liveReturn" style="display:none">عُد إلى المباشر ←</button>
-    </section>
-</div>
 
-<div class="player-bar" id="playerBar">
-    <div class="player-inner">
-        <button class="play-main" id="playBtn" title="تشغيل / إيقاف (مسافة)" aria-label="تشغيل أو إيقاف">
-            <svg class="i-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            <svg class="i-pause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
-        </button>
-
-        <div class="np">
-            <div class="line1">
-                <span class="surah-ar" id="npSurahBar">—</span>
-            </div>
-            <div class="line2">
-                <span id="npStatus">اضغط زر التشغيل للانضمام إلى البث</span>
-            </div>
-            <div class="ayah-progress"><i id="ayahProgress"></i></div>
-        </div>
-
-        <div class="player-controls">
-            <select id="surahSel" title="استمع لسورة منفردة" aria-label="استمع لسورة منفردة">
-                @foreach ($clientPayload['chapters'] as $c)
-                    <option value="{{ $c['id'] }}">{{ ar_digits($c['id']) }} · {{ $c['na'] }}</option>
-                @endforeach
-            </select>
-        </div>
-    </div>
 </div>
 
 <div class="begin-overlay" id="beginOverlay">
@@ -122,5 +133,5 @@
 <script>
     window.__QURAN__ = @json($clientPayload);
 </script>
-<script src="/js/player.js?v=17" defer></script>
+<script src="/js/player.js?v=18" defer></script>
 @endpush

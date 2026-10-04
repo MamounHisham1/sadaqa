@@ -291,25 +291,18 @@
     const c = chapter(state.surah);
     const rec = reciterInfo(state.reciterId);
     $("#npSurahAr").textContent = `سورة ${c.na}`;
-    const bar = $("#npSurahBar");
-    if (bar) bar.textContent = `سورة ${c.na}`;
-    const status = $("#npStatus");
-    if (status) status.textContent = state.mode === "live" ? "بث مباشر — استمع مع الجميع الآن" : "استماع منفرد لهذه السورة";
     $("#npReciter").innerHTML = `<b>${rec.ar}</b>`;
     $("#npKhatma").textContent = `السورة ${toAr(state.surah)} من ${toAr(114)} · ختمة ${toAr((state.pass % ROTATION.length) + 1)} من ${toAr(ROTATION.length)}`;
     document.title = `${c.na} · صدقة`;
-    const sel = $("#surahSel");
-    if (sel && sel.value !== String(state.surah)) sel.value = String(state.surah);
   }
 
   function updateLiveChip() {
     const chip = $("#liveChip");
-    const back = $("#liveReturn");
     if (!chip) return;
     const live = state.mode === "live";
     chip.classList.toggle("off", !live);
     chip.querySelector("span").textContent = live ? "مباشر" : "استماع منفرد";
-    back.style.display = live ? "none" : "inline-flex";
+    setTab(state.mode !== "live");
   }
 
   let toastTimer;
@@ -394,16 +387,128 @@
     }
   });
 
-  // Surah tab: personal on-demand listening from the surah's start.
-  $("#surahSel").addEventListener("change", () => {
-    const surah = +$("#surahSel").value;
-    state.mode = "ondemand";
-    playSurah(surah, state.reciterId, 0, 0);
+  // ---------- tabs: live station vs manual listening ----------
+
+  function setTab(manual) {
+    const live = $("#tabLive");
+    const man = $("#tabManual");
+    if (!live || !man) return;
+    live.classList.toggle("on", !manual);
+    man.classList.toggle("on", manual);
+    live.setAttribute("aria-selected", String(!manual));
+    man.setAttribute("aria-selected", String(manual));
+    const panel = $("#manualControls");
+    if (panel) panel.hidden = !manual;
+  }
+
+  $("#tabLive").addEventListener("click", async () => {
+    setTab(false);
+    if (state.mode !== "live") {
+      if (await joinLive()) toast("عدت إلى البث المباشر");
+    } else if (active.paused) {
+      active.play().catch(() => {});
+    }
   });
 
-  $("#liveReturn")?.addEventListener("click", async () => {
-    if (await joinLive()) toast("عدت إلى البث المباشر");
+  $("#tabManual").addEventListener("click", () => {
+    setTab(true);
+    if (state.mode !== "ondemand") {
+      // Detach from the station clock; the current surah keeps playing and
+      // advances locally until the user picks something.
+      state.mode = "ondemand";
+      clearTimeout(schedule.timer);
+      updateLiveChip();
+      updateNowPlaying();
+    }
   });
+
+  // ---------- searchable pickers (manual mode) ----------
+
+  function makePicker(root, items, initialValue, onPick) {
+    const btn = root.querySelector(".picker-btn");
+    const value = root.querySelector(".picker-value");
+    const menu = root.querySelector(".picker-menu");
+    const search = root.querySelector(".picker-search");
+    const list = root.querySelector(".picker-list");
+    let current = initialValue;
+
+    const labelOf = (v) => {
+      const item = items.find((i) => String(i.v) === String(v));
+      return item ? item.label : "—";
+    };
+
+    const renderList = (query) => {
+      const q = (query || "").trim().toLowerCase();
+      const d_q = q.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+      list.innerHTML = "";
+      const hits = items.filter((i) => !q || String(i.label).toLowerCase().includes(q) || String(i.v) === d_q);
+      if (!hits.length) {
+        const empty = document.createElement("div");
+        empty.className = "picker-empty";
+        empty.textContent = "لا توجد نتائج";
+        list.appendChild(empty);
+        return;
+      }
+      for (const item of hits) {
+        const opt = document.createElement("button");
+        opt.type = "button";
+        opt.className = "picker-opt" + (String(item.v) === String(current) ? " on" : "");
+        opt.textContent = item.label;
+        opt.addEventListener("click", () => {
+          current = item.v;
+          value.textContent = labelOf(current);
+          menu.hidden = true;
+          onPick(item.v);
+        });
+        list.appendChild(opt);
+      }
+    };
+
+    const close = () => { menu.hidden = true; };
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const opening = menu.hidden;
+      document.querySelectorAll(".picker-menu").forEach((m) => { if (m !== menu) m.hidden = true; });
+      menu.hidden = !opening;
+      if (opening) {
+        renderList(search.value);
+        search.value = "";
+        search.focus();
+      }
+    });
+    search.addEventListener("input", () => renderList(search.value));
+    menu.addEventListener("click", (e) => e.stopPropagation());
+    document.addEventListener("click", close);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+
+    value.textContent = labelOf(current);
+  }
+
+  makePicker(
+    $("#surahPicker"),
+    CFG.chapters.map((c) => ({ v: c.id, label: `${toAr(c.id)} · ${c.na}` })),
+    state.surah,
+    (surah) => {
+      state.mode = "ondemand";
+      playSurah(surah, state.reciterId, 0, 0);
+      updateLiveChip();
+    },
+  );
+
+  makePicker(
+    $("#reciterPicker"),
+    CFG.reciters.map((r) => ({ v: r.id, label: r.ar })),
+    state.reciterId,
+    (reciterId) => {
+      if (state.mode !== "ondemand") {
+        state.mode = "ondemand";
+        clearTimeout(schedule.timer);
+      }
+      playSurah(state.surah, reciterId, 0, 0);
+      updateLiveChip();
+    },
+  );
 
   // Theme toggling lives in the layout so it works on every page.
 
