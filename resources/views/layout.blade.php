@@ -4,14 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+        // Apply the saved theme before first paint (works on every page).
+        (function () {
+            try {
+                var t = localStorage.getItem('theme') || 'light';
+                if (t === 'parchment') t = 'light';
+                document.documentElement.dataset.theme = t;
+            } catch (e) { /* default */ }
+        })();
+    </script>
     <title>@yield('title', 'صدقة · إذاعة القرآن — تلاوة لا تتوقف')</title>
-    <meta name="description" content="@yield('meta_description', 'تلاوة متواصلة للقرآن الكريم مجانًا وبدون توقف. أنشئ رابط صدقة جارية باسم من تحب — قارئٌ يختم المصحف كاملًا ثم يليه القارئ التالي.')">
+    <meta name="description" content="@yield('meta_description', 'تلاوة متواصلة للقرآن الكريم مجانًا وبدون توقف. أنشئ رابط صدقة جارية باسم من تحب — إذاعة مباشرة يسمعها الجميع في نفس اللحظة.')">
+    <meta name="theme-color" content="#167a5e">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="صدقة">
     @stack('meta')
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f6f5f1'/%3E%3Cpath d='M41 38.5A12.5 12.5 0 1 1 25.5 23 10 10 0 0 0 41 38.5z' fill='%23167a5e'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri:wght@400;700&family=Amiri+Quran&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/app.css?v=15">
+    <link rel="stylesheet" href="/css/app.css?v=16">
 </head>
 <body>
     <header class="topbar">
@@ -35,10 +52,75 @@
     <footer class="site-footer">
         <span class="ar">وَرَتِّلِ ٱلْقُرْآنَ تَرْتِيلًا</span>
         صدقة · إذاعة القرآن — تلاوة لأجل الصدقة الجارية<br>
-        نص القرآن: رواية عثمانية (تنزيل، عبر quran.com) · التلاوات: islamic.network و everyayah.com
+        نص القرآن: رواية عثمانية (تنزيل، عبر quran.com) · التلاوات: mp3quran.net
     </footer>
 
+    <button class="pwa-install" id="pwaInstall" hidden>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+        ثبّت التطبيق
+    </button>
+
     <div class="toast" id="toast" role="status"></div>
+
+    <script>
+        // Theme toggle — lives in the layout so it works on every page.
+        (function () {
+            var btn = document.getElementById('themeBtn');
+            if (!btn) return;
+            btn.addEventListener('click', function () {
+                var next = document.documentElement.dataset.theme === 'night' ? 'light' : 'night';
+                document.documentElement.dataset.theme = next;
+                try { localStorage.setItem('theme', next); } catch (e) { /* private mode */ }
+            });
+        })();
+
+        // PWA install button — appears when the browser offers installation,
+        // hides once installed (or when running as the installed app).
+        (function () {
+            var btn = document.getElementById('pwaInstall');
+            var installed = function () {
+                return localStorage.getItem('pwa-installed') === '1'
+                    || window.matchMedia('(display-mode: standalone)').matches
+                    || window.navigator.standalone === true;
+            };
+            var deferred = null;
+            var refresh = function () {
+                btn.hidden = !(deferred && !installed());
+            };
+            window.addEventListener('beforeinstallprompt', function (e) {
+                e.preventDefault();
+                deferred = e;
+                refresh();
+            });
+            window.addEventListener('appinstalled', function () {
+                try { localStorage.setItem('pwa-installed', '1'); } catch (e) { /* ignore */ }
+                deferred = null;
+                refresh();
+            });
+            btn.addEventListener('click', function () {
+                if (!deferred) return;
+                deferred.prompt();
+                deferred.userChoice.then(function (choice) {
+                    if (choice.outcome === 'accepted') {
+                        try { localStorage.setItem('pwa-installed', '1'); } catch (e) { /* ignore */ }
+                    }
+                    deferred = null;
+                    refresh();
+                });
+            });
+            if (installed()) {
+                try { localStorage.setItem('pwa-installed', '1'); } catch (e) { /* ignore */ }
+            }
+            refresh();
+        })();
+
+        // Service worker (HTTPS or localhost only).
+        if ('serviceWorker' in navigator && (location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname))) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/sw.js').catch(function () { /* offline shell is optional */ });
+            });
+        }
+    </script>
 
     @stack('scripts')
 </body>

@@ -170,6 +170,7 @@
   /** Quiet background correction — nudges the clock, never interrupts audio. */
   async function resync(force) {
     if (!state.started || state.mode !== "live") return;
+    if (active.paused) return; // waiting for a gesture (autoplay blocked) or paused
     if (!force && Date.now() - state.lastResync < 5000) return;
     state.lastResync = Date.now();
     const pos = await fetchNow();
@@ -333,14 +334,40 @@
     if (active.paused) active.play(); else active.pause();
   }
 
+  let joinAttempt = false;
+  /** Join the station immediately. Called automatically when the page opens;
+      if the browser blocks autoplay, the overlay + any first tap resumes it. */
   async function begin() {
+    if (joinAttempt || state.started) return;
+    joinAttempt = true;
     state.started = true;
     playBtn.disabled = true;
     $("#npSurahAr").textContent = "جارٍ الاتصال بالإذاعة…";
     const ok = await joinLive();
-    if (ok) $("#beginOverlay")?.classList.add("hide");
-    else $("#npSurahAr").textContent = "—";
+    joinAttempt = false;
     playBtn.disabled = false;
+    if (!ok) {
+      $("#npSurahAr").textContent = "—";
+      return;
+    }
+
+    // Did the browser allow audio without a gesture?
+    await new Promise((r) => setTimeout(r, 350));
+    if (active.paused) {
+      // Autoplay blocked: the overlay stays as the tap-to-start surface and
+      // any first tap (or key) anywhere joins the broadcast.
+      $("#npSurahAr").textContent = "اضغط في أي مكان للانضمام";
+      const kick = () => {
+        document.removeEventListener("pointerdown", kick);
+        document.removeEventListener("keydown", kick);
+        $("#beginOverlay")?.classList.add("hide");
+        active.play().catch(() => {});
+      };
+      document.addEventListener("pointerdown", kick, { once: true });
+      document.addEventListener("keydown", kick, { once: true });
+      return;
+    }
+    $("#beginOverlay")?.classList.add("hide");
   }
 
   playBtn.addEventListener("click", togglePlay);
@@ -349,6 +376,9 @@
     if (e.target.closest("a, button")) return;
     if (!state.started) begin();
   });
+
+  // Open the link → the stream starts immediately (autoplay permitting).
+  begin();
 
   // Resuming after a pause = rejoin the live moment (radio behavior).
   let wasPaused = false;
@@ -375,16 +405,7 @@
     if (await joinLive()) toast("عدت إلى البث المباشر");
   });
 
-  // Theme
-  const themeBtn = $("#themeBtn");
-  function applyTheme(t) {
-    if (t === "parchment") t = "light";
-    document.documentElement.dataset.theme = t;
-    localStorage.setItem("theme", t);
-  }
-  themeBtn.addEventListener("click", () =>
-    applyTheme(document.documentElement.dataset.theme === "night" ? "light" : "night"));
-  applyTheme(localStorage.getItem("theme") || "light");
+  // Theme toggling lives in the layout so it works on every page.
 
   // Share
   const shareUrl = location.origin + location.pathname;

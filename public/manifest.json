@@ -1,0 +1,20 @@
+{
+    "name": "صدقة · إذاعة القرآن",
+    "short_name": "صدقة",
+    "description": "تلاوة قرآنية متواصلة تبث على مدار الساعة — انضم إلى ما يستمع إليه الجميع الآن، وأنشئ رابط صدقة باسم من تحب.",
+    "lang": "ar",
+    "dir": "rtl",
+    "start_url": "/radio",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#f6f5f1",
+    "theme_color": "#167a5e",
+    "categories": ["music", "lifestyle", "education"],
+    "icons": [
+        { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+        { "src": "/icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+        { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    ]
+}
