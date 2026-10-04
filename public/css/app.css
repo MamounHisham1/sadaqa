@@ -273,7 +273,18 @@ input:focus, textarea:focus, select:focus {
 
 /* ---------- stream: dedication ---------- */
 
-.stream-root { padding-bottom: 180px; }
+/* Fill the viewport between the top bar and the player bar so short
+   pages (stream) have no dead void below the content. Auto margins
+   center the panels without clipping when content grows. */
+.stream-root {
+  min-height: calc(100vh - 160px);
+  min-height: calc(100dvh - 160px);
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0 96px;
+}
+.stream-root > :first-child { margin-top: auto; }
+.stream-root > :last-child { margin-bottom: auto; }
 
 .dedication {
   max-width: 720px;
@@ -539,7 +550,7 @@ input:focus, textarea:focus, select:focus {
   text-align: center;
   color: var(--muted);
   font-size: 0.9rem;
-  padding: 36px 20px 56px;
+  padding: 36px 20px 110px;
   line-height: 1.9;
 }
 .site-footer .ar { display: block; margin-bottom: 4px; font-size: 1.1rem; color: var(--ink); }
@@ -612,7 +623,7 @@ input:focus, textarea:focus, select:focus {
 
 .pwa-install {
   position: fixed;
-  bottom: 104px;
+  bottom: 104px; /* JS refines: player-bar height + 12 */
   left: 16px;
   z-index: 45;
   display: inline-flex;
@@ -648,7 +659,7 @@ html { -webkit-text-size-adjust: 100%; }
   .check-grid { grid-template-columns: repeat(auto-fill, minmax(122px, 1fr)); }
   .success-banner { font-size: 0.9rem; padding: 14px 16px; margin-inline: 12px; }
   .player-bar { padding: 10px 12px; }
-  .pwa-install { bottom: 130px; left: 12px; font-size: 0.9rem; padding: 9px 16px; }
+
 }
 
 @media (max-width: 380px) {

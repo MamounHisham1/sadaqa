@@ -122,5 +122,5 @@
 <script>
     window.__QURAN__ = @json($clientPayload);
 </script>
-<script src="/js/player.js?v=16" defer></script>
+<script src="/js/player.js?v=17" defer></script>
 @endpush

@@ -28,7 +28,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri:wght@400;700&family=Amiri+Quran&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/app.css?v=16">
+    <link rel="stylesheet" href="/css/app.css?v=17">
 </head>
 <body>
     <header class="topbar">
@@ -112,6 +112,13 @@
                 try { localStorage.setItem('pwa-installed', '1'); } catch (e) { /* ignore */ }
             }
             refresh();
+            // Keep the button just above the player bar whatever its height.
+            var bar = document.getElementById('playerBar');
+            if (bar) {
+                var fit = function () { btn.style.bottom = (bar.offsetHeight + 12) + 'px'; };
+                fit();
+                window.addEventListener('resize', fit);
+            }
         })();
 
         // Service worker (HTTPS or localhost only).
