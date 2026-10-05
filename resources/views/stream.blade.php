@@ -28,13 +28,15 @@
             <div class="stats">
                 <b id="statKhatmas">{{ ar_digits($link->khatmas) }}</b> ختمة كاملة
             </div>
-            @if (! $isNew)
+            @if ($link->password || ! $isNew)
                 <div class="share-row">
                     @if ($link->password)
                         <a class="btn small ghost" href="{{ route('links.edit', ['token' => $link->token]) }}">تعديل</a>
                     @endif
-                    <button class="btn small" id="shareCopy">نسخ الرابط</button>
-                    <a class="btn small" id="shareWa" href="#">مشاركة واتساب</a>
+                    @if (! $isNew)
+                        <button class="btn small" id="shareCopy">نسخ الرابط</button>
+                        <a class="btn small" id="shareWa" href="#">مشاركة واتساب</a>
+                    @endif
                 </div>
             @endif
         </section>
@@ -102,9 +104,6 @@
             <code>{{ route('stream', ['token' => $link->token]) }}</code>
             <button class="btn small" id="shareCopy">نسخ</button>
             <a class="btn small" id="shareWa" href="#">واتساب</a>
-            @if ($link->password)
-                <a class="btn small ghost" href="{{ route('links.edit', ['token' => $link->token]) }}">تعديل</a>
-            @endif
         </div>
     @endif
 

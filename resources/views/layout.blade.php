@@ -28,7 +28,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri:wght@400;700&family=Amiri+Quran&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/app.css?v=22">
+    <link rel="stylesheet" href="/css/app.css?v=23">
 </head>
 <body>
     <header class="topbar">
