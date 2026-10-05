@@ -211,7 +211,7 @@ a:hover { color: var(--accent-deep); }
 }
 .field .hint { font-weight: 400; color: var(--muted); font-size: 0.88rem; margin-right: 6px; }
 
-input[type="text"], textarea, select {
+input[type="text"], input[type="password"], textarea, select {
   width: 100%;
   min-height: 52px;
   background: var(--bg);

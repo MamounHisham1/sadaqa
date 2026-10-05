@@ -34,7 +34,7 @@
             </div>
 
             <div class="field">
-                <label for="recipient_name">لمن الصدقة</label>
+                <label for="recipient_name" id="recipientLabel">لمن الصدقة</label>
                 <input type="text" id="recipient_name" name="recipient_name" maxlength="100" value="{{ old('recipient_name', $link->recipient_name) }}">
             </div>
 
@@ -74,6 +74,13 @@
     document.getElementById('typeRow').addEventListener('change', () => {
         document.querySelectorAll('#typeRow .radio-pill').forEach(p => p.classList.remove('on'));
         document.querySelector('#typeRow input:checked')?.closest('.radio-pill')?.classList.add('on');
+        const label = document.getElementById('recipientLabel');
+        if (label) label.textContent = document.querySelector('#typeRow input[value="gift"]').checked ? 'إهداء لمن' : 'لمن الصدقة';
     });
+    // match the label to the loaded type
+    (function syncLabel() {
+        const label = document.getElementById('recipientLabel');
+        if (label && document.querySelector('#typeRow input[value="gift"]')?.checked) label.textContent = 'إهداء لمن';
+    })();
 </script>
 @endpush

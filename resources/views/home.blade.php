@@ -42,7 +42,7 @@
             </div>
 
             <div class="field">
-                <label for="recipient_name">لمن الصدقة</label>
+                <label for="recipient_name" id="recipientLabel">لمن الصدقة</label>
                 <input type="text" id="recipient_name" name="recipient_name" maxlength="100" value="{{ old('recipient_name') }}">
             </div>
 
@@ -54,6 +54,7 @@
             <div class="field">
                 <label for="link_password">كلمة مرور للتعديل لاحقًا <span class="hint">اختياري</span></label>
                 <input type="password" id="link_password" name="link_password" autocomplete="new-password">
+                <p class="hint" style="margin-top:6px; text-align:start;">تذكّرها جيدًا.</p>
             </div>
 
             <div class="field">
@@ -82,6 +83,8 @@
     document.getElementById('typeRow').addEventListener('change', () => {
         document.querySelectorAll('#typeRow .radio-pill').forEach(p => p.classList.remove('on'));
         document.querySelector('#typeRow input:checked')?.closest('.radio-pill')?.classList.add('on');
+        const label = document.getElementById('recipientLabel');
+        if (label) label.textContent = document.querySelector('#typeRow input[value="gift"]').checked ? 'إهداء لمن' : 'لمن الصدقة';
     });
 </script>
 @endpush
