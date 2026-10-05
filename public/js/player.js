@@ -327,8 +327,8 @@
   }
 
   let joinAttempt = false;
-  /** Join the station immediately. Called automatically when the page opens;
-      if the browser blocks autoplay, the overlay + any first tap resumes it. */
+  /** Join the station immediately when the page opens. If the browser blocks
+      autoplay, the play button stays as the normal fallback control. */
   async function begin() {
     if (joinAttempt || state.started) return;
     joinAttempt = true;
@@ -339,35 +339,11 @@
     joinAttempt = false;
     playBtn.disabled = false;
     if (!ok) {
-      $("#npSurahAr").textContent = "—";
-      return;
+      $("#npSurahAr").textContent = "تعذّر الاتصال — اضغط زر التشغيل للمحاولة";
     }
-
-    // Did the browser allow audio without a gesture?
-    await new Promise((r) => setTimeout(r, 350));
-    if (active.paused) {
-      // Autoplay blocked: the overlay stays as the tap-to-start surface and
-      // any first tap (or key) anywhere joins the broadcast.
-      $("#npSurahAr").textContent = "اضغط في أي مكان للانضمام";
-      const kick = () => {
-        document.removeEventListener("pointerdown", kick);
-        document.removeEventListener("keydown", kick);
-        $("#beginOverlay")?.classList.add("hide");
-        active.play().catch(() => {});
-      };
-      document.addEventListener("pointerdown", kick, { once: true });
-      document.addEventListener("keydown", kick, { once: true });
-      return;
-    }
-    $("#beginOverlay")?.classList.add("hide");
   }
 
   playBtn.addEventListener("click", togglePlay);
-  $("#beginBtn")?.addEventListener("click", begin);
-  $("#beginOverlay")?.addEventListener("click", (e) => {
-    if (e.target.closest("a, button")) return;
-    if (!state.started) begin();
-  });
 
   // Open the link → the stream starts immediately (autoplay permitting).
   begin();

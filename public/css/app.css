@@ -344,41 +344,6 @@ input:focus, textarea:focus, select:focus {
   word-break: break-all;
 }
 
-/* ---------- begin overlay ---------- */
-
-.begin-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  display: grid;
-  place-items: center;
-  text-align: center;
-  background: var(--bg);
-  padding: 24px;
-  transition: opacity 0.4s;
-}
-.begin-overlay.hide { opacity: 0; pointer-events: none; }
-
-.begin-play {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  border: none;
-  background: var(--accent);
-  color: #fff;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  margin: 0 auto 26px;
-  transition: background 0.15s, transform 0.1s;
-}
-.begin-play:hover { background: var(--accent-deep); }
-.begin-play:active { transform: scale(0.97); }
-
-.begin-overlay .t1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; text-wrap: balance; }
-.begin-overlay .t1 .ar { color: var(--accent-deep); }
-.begin-overlay .t2 { color: var(--muted); max-width: 440px; margin: 0 auto; line-height: 1.9; font-size: 1rem; }
-
 /* ---------- toast ---------- */
 
 .toast {

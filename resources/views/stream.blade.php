@@ -102,6 +102,9 @@
             <code>{{ route('stream', ['token' => $link->token]) }}</code>
             <button class="btn small" id="shareCopy">نسخ</button>
             <a class="btn small" id="shareWa" href="#">واتساب</a>
+            @if ($link->password)
+                <a class="btn small ghost" href="{{ route('links.edit', ['token' => $link->token]) }}">تعديل</a>
+            @endif
         </div>
     @endif
 
@@ -109,31 +112,11 @@
 
 </div>
 
-<div class="begin-overlay" id="beginOverlay">
-    <div>
-        <button class="begin-play" id="beginBtn" aria-label="ابدأ التلاوة">
-            <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-        </button>
-        @if ($link)
-            <div class="t1">
-                @if ($link->recipient_name)
-                    {{ $dedicationTypes[$link->dedication_type] ?? 'صدقة عن' }} <span class="ar">{{ $link->recipient_name }}</span>
-                @else
-                    {{ ($link->dedication_type === 'gift') ? 'هدية عامة' : 'صدقة عامة' }}
-                @endif
-            </div>
-            <div class="t2">اضغط لتنضم إلى البث المباشر — تلاوة لا تتوقف، ختمةً بعد ختمة.</div>
-        @else
-            <div class="t1">إذاعة صدقة</div>
-            <div class="t2">اضغط لتنضم إلى البث المباشر — تلاوة لا تتوقف، ختمةً بعد ختمة.</div>
-        @endif
-    </div>
-</div>
 @endsection
 
 @push('scripts')
 <script>
     window.__QURAN__ = @json($clientPayload);
 </script>
-<script src="/js/player.js?v=20" defer></script>
+<script src="/js/player.js?v=21" defer></script>
 @endpush
