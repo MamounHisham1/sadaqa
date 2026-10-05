@@ -503,6 +503,7 @@ html { -webkit-text-size-adjust: 100%; }
   .station-player { margin-top: 12px; }
   .check-grid { grid-template-columns: repeat(auto-fill, minmax(122px, 1fr)); }
   .success-banner { font-size: 0.9rem; padding: 12px 14px; margin-top: 14px; }
+  .success-banner code { flex: 1 1 100%; }
 
 }
 
