@@ -273,15 +273,31 @@ input:focus, textarea:focus, select:focus {
 
 /* ---------- stream: dedication ---------- */
 
-/* Fill the viewport between the top bar and the player bar so short
-   pages (stream) have no dead void below the content. Auto margins
-   center the panels without clipping when content grows. */
-.stream-root {
-  min-height: calc(100vh - 160px);
-  min-height: calc(100dvh - 160px);
+/* Constrain the page content and keep side gutters on small screens. */
+.container {
+  width: 100%;
+  max-width: 752px; /* 720px panels + side gutters */
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+
+/* The stream page fills the viewport exactly: the body is a column, the
+   stream root takes the space between the top bar and the footer, and the
+   auto margins center the panels in whatever room is left. */
+body.page-stream {
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  padding: 6px 0 96px;
+}
+body.page-stream > .site-footer { padding: 22px 20px 30px; font-size: 0.85rem; }
+
+.stream-root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: 6px;
+  padding-bottom: 10px;
 }
 .stream-root > :first-child { margin-top: auto; }
 .stream-root > :last-child { margin-bottom: auto; }
@@ -304,6 +320,7 @@ input:focus, textarea:focus, select:focus {
   font-size: clamp(1.9rem, 5vw, 2.6rem);
   line-height: 1.4;
   margin: 0 0 10px;
+  overflow-wrap: break-word;
 }
 .dedication .message {
   color: var(--muted);
@@ -350,7 +367,7 @@ input:focus, textarea:focus, select:focus {
 
 .toast {
   position: fixed;
-  bottom: 118px;
+  bottom: 22px;
   left: 50%;
   transform: translateX(-50%) translateY(12px);
   background: var(--panel);
@@ -375,7 +392,7 @@ input:focus, textarea:focus, select:focus {
   text-align: center;
   color: var(--muted);
   font-size: 0.9rem;
-  padding: 36px 20px 110px;
+  padding: 36px 20px 40px;
   line-height: 1.9;
 }
 .site-footer .ar { display: block; margin-bottom: 4px; font-size: 1.1rem; color: var(--ink); }
@@ -479,11 +496,13 @@ html { -webkit-text-size-adjust: 100%; }
 @media (max-width: 640px) {
   .hero { padding: 40px 18px 8px; }
   .form-card { padding: 22px 18px; }
-  .dedication { padding: 24px 16px 18px; }
-  .station { padding: 22px 14px 18px; }
+  .dedication { padding: 22px 16px 16px; margin-top: 16px; }
+  .station { padding: 20px 14px 16px; }
+  .station-tabs { margin-bottom: 12px; }
   .station-surah { font-size: clamp(1.7rem, 8vw, 2.4rem); }
+  .station-player { margin-top: 12px; }
   .check-grid { grid-template-columns: repeat(auto-fill, minmax(122px, 1fr)); }
-  .success-banner { font-size: 0.9rem; padding: 14px 16px; margin-inline: 12px; }
+  .success-banner { font-size: 0.9rem; padding: 12px 14px; margin-top: 14px; }
 
 }
 

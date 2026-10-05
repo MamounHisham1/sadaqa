@@ -8,8 +8,10 @@
     @endif
 @endpush
 
+@section('body_class', 'page-stream')
+
 @section('content')
-<div class="stream-root">
+<div class="stream-root container">
 
     @if ($link)
         <section class="dedication panel">

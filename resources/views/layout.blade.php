@@ -28,9 +28,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri:wght@400;700&family=Amiri+Quran&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/app.css?v=23">
+    <link rel="stylesheet" href="/css/app.css?v=24">
 </head>
-<body>
+<body class="@yield('body_class')">
     <header class="topbar">
         <a class="brand" href="{{ route('home') }}" aria-label="صدقة — الرئيسية">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 13.3A9 9 0 1 1 10.7 3a7 7 0 0 0 10.3 10.3z"/></svg>
