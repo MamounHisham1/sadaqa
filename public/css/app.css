@@ -691,3 +691,60 @@ html { -webkit-text-size-adjust: 100%; }
 
 .manual-controls[hidden] { display: none; }
 
+
+/* ---------- simple pages (feedback / admin / edit) ---------- */
+
+.simple-page { max-width: 640px; margin: 30px auto; }
+.page-title { font-size: 1.5rem; font-weight: 700; margin: 0 0 6px; text-align: center; }
+.page-sub { color: var(--muted); text-align: center; margin: 0 0 22px; line-height: 1.8; }
+.page-sub a { font-weight: 700; }
+
+.btn.small.ghost { border-color: var(--line); color: var(--muted); background: var(--panel); }
+.btn.small.ghost:hover { color: var(--accent); border-color: var(--accent); }
+
+.admin-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.admin-head .page-title { text-align: start; margin: 0; }
+.admin-section { font-size: 1.1rem; font-weight: 700; margin: 28px 0 12px; }
+
+.fb-item {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  background: var(--bg);
+}
+.fb-item.resolved { opacity: 0.55; }
+.fb-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.fb-row form { margin-inline-start: auto; }
+.fb-type {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.fb-type.bug { background: rgba(179, 69, 47, 0.12); color: #b3452f; }
+.fb-type.feature { background: var(--wash); color: var(--accent-deep); }
+.fb-date { color: var(--muted); font-size: 0.8rem; }
+.fb-message { margin: 10px 0 6px; line-height: 1.8; white-space: pre-wrap; }
+.fb-contact { color: var(--muted); font-size: 0.85rem; }
+.fb-url { font-size: 0.78rem; word-break: break-all; }
+
+.links-table { display: flex; flex-direction: column; gap: 6px; }
+.link-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  font-size: 0.95rem;
+}
+.link-row a { font-family: ui-monospace, monospace; font-weight: 700; }
+.link-row > span:nth-child(2) { flex: 1; }
+.link-meta { color: var(--muted); font-size: 0.85rem; }
+.badge { font-size: 0.85rem; }
+
+@media (max-width: 640px) {
+  .simple-page { margin: 16px 12px; padding: 22px 16px; }
+}

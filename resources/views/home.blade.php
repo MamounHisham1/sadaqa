@@ -52,6 +52,11 @@
             </div>
 
             <div class="field">
+                <label for="link_password">كلمة مرور للتعديل لاحقًا <span class="hint">اختياري</span></label>
+                <input type="password" id="link_password" name="link_password" autocomplete="new-password">
+            </div>
+
+            <div class="field">
                 <label>القرّاء <span class="hint">اختر من تتناوب بينهم التلاوة — الكل محدد افتراضيًا</span></label>
                 <div class="check-grid">
                     @foreach ($reciters as $r)

@@ -28,7 +28,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri:wght@400;700&family=Amiri+Quran&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/app.css?v=19">
+    <link rel="stylesheet" href="/css/app.css?v=20">
 </head>
 <body>
     <header class="topbar">
@@ -52,7 +52,8 @@
     <footer class="site-footer">
         <span class="ar">وَرَتِّلِ ٱلْقُرْآنَ تَرْتِيلًا</span>
         صدقة · إذاعة القرآن — تلاوة لأجل الصدقة الجارية<br>
-        نص القرآن: رواية عثمانية (تنزيل، عبر quran.com) · التلاوات: mp3quran.net
+        نص القرآن: رواية عثمانية (تنزيل، عبر quran.com) · التلاوات: mp3quran.net<br>
+        <a href="{{ route('feedback.form') }}">طلب ميزة أو الإبلاغ عن مشكلة</a>
     </footer>
 
     <button class="pwa-install" id="pwaInstall" hidden>

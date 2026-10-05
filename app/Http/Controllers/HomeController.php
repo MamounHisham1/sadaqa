@@ -40,6 +40,13 @@ class HomeController extends Controller
             ->values()
             ->all() ?: null;
 
+        $validated['link_password'] = $request->validate([
+            'link_password' => ['nullable', 'string', 'min:4', 'max:50'],
+        ], [
+            'link_password.min' => 'كلمة المرور قصيرة (٤ أحرف على الأقل)',
+            'link_password.max' => 'كلمة المرور طويلة جدًا',
+        ])['link_password'] ?? null;
+
         $link = null;
         // Short numeric tokens have a small keyspace; retry on the rare collision.
         for ($attempt = 0; $attempt < 8; $attempt++) {
@@ -54,6 +61,7 @@ class HomeController extends Controller
                     'sender_name' => $clean($validated['sender_name'] ?? null),
                     'message' => $clean($validated['message'] ?? null),
                     'rotation' => $rotation,
+                    'password' => $validated['link_password'] ? \Illuminate\Support\Facades\Hash::make($validated['link_password']) : null,
                 ]);
                 break;
             } catch (\Illuminate\Database\UniqueConstraintViolationException) {

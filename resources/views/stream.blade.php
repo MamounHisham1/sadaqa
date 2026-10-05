@@ -30,6 +30,9 @@
             </div>
             @if (! $isNew)
                 <div class="share-row">
+                    @if ($link->password)
+                        <a class="btn small ghost" href="{{ route('links.edit', ['token' => $link->token]) }}">تعديل</a>
+                    @endif
                     <button class="btn small" id="shareCopy">نسخ الرابط</button>
                     <a class="btn small" id="shareWa" href="#">مشاركة واتساب</a>
                 </div>

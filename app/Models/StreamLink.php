@@ -13,6 +13,7 @@ class StreamLink extends Model
         'sender_name',
         'message',
         'rotation',
+        'password',
     ];
 
     protected function casts(): array

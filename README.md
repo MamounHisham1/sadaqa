@@ -100,6 +100,15 @@ Ash-Shatri · Shuraim · Hudhaify · Ajamy · Hani Ar-Rifai · Muhammad Ayyub
 Add or swap reciters in [`config/quran.php`](config/quran.php) — one entry with a name
 and a full-surah MP3 base URL is all it takes.
 
+## Admin & feedback
+
+- Footer on every page links to a feedback form (bug / feature request,
+  optional contact). Set `ADMIN_PASSWORD` in `.env`, then visit `/admin`
+  to read reports, mark them handled, and browse recent links.
+- Links created with a **password** can be edited later by anyone who
+  knows it: an edit button appears on the link page and the password
+  gates the changes (hashed at rest, rate-limited).
+
 ## Deployment notes
 
 - Point nginx/Apache at `public/`, run `php artisan migrate` and the two `quran:*`
