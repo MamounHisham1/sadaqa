@@ -29,3 +29,6 @@ Thumbs.db
 # session tooling
 .video_agent/
 .zcodeignore
+
+# local media workspace, not part of the app
+/brag-output/
