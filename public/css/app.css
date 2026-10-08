@@ -676,6 +676,13 @@ html { -webkit-text-size-adjust: 100%; }
 .play-main .i-pause { display: none; }
 .play-main.is-playing .i-pause { display: block; }
 .play-main.is-playing .i-play { display: none; }
+/* Autoplay was muted: ask for the one tap that restores the sound. */
+.play-main.attn { animation: playpulse 1.6s ease-out infinite; }
+@keyframes playpulse {
+  0%   { box-shadow: 0 0 0 0 rgba(22, 122, 94, 0.45); }
+  70%  { box-shadow: 0 0 0 16px rgba(22, 122, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(22, 122, 94, 0); }
+}
 
 .manual-controls[hidden] { display: none; }
 

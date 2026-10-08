@@ -68,7 +68,52 @@
     };
     if (el.readyState >= 1) seek();
     else el.addEventListener("loadedmetadata", seek);
-    el.play().catch(() => {});
+    el.play().catch((err) => {
+      if (err && err.name === "NotAllowedError") handleBlockedAutoplay(el);
+    });
+  }
+
+  // ---------- autoplay policy ----------
+
+  let unlockArmed = false;
+  /** First user gesture anywhere: unmute / start, so a blocked page
+      comes alive with a single tap instead of hunting for the button. */
+  function armUnlock() {
+    if (unlockArmed) return;
+    unlockArmed = true;
+    const unlock = () => {
+      document.removeEventListener("pointerdown", unlock, true);
+      document.removeEventListener("touchstart", unlock, true);
+      document.removeEventListener("keydown", unlock, true);
+      unlockArmed = false;
+      if (!state.started) { begin(); return; }
+      unmute();
+      if (active.paused) active.play().catch(() => {});
+    };
+    document.addEventListener("pointerdown", unlock, true);
+    document.addEventListener("touchstart", unlock, true);
+    document.addEventListener("keydown", unlock, true);
+  }
+
+  function unmute() {
+    active.muted = false;
+    state.mutedAutoplay = false;
+    playBtn.classList.remove("attn");
+  }
+
+  /** Unmuted autoplay was refused. Browsers still allow muted playback:
+      start silent (stream stays live and buffered), then the first tap
+      anywhere restores the sound. */
+  async function handleBlockedAutoplay(el) {
+    if (el !== active || state.mutedAutoplay) return;
+    el.muted = true;
+    try {
+      await el.play();
+      state.mutedAutoplay = true;
+      playBtn.classList.add("attn");
+      toast("اضغط في أي مكان لتشغيل الصوت");
+    } catch { /* fully blocked (e.g. iOS low power) */ }
+    armUnlock();
   }
 
   function localNext(surah, pass) {
@@ -322,6 +367,7 @@
   }
 
   function togglePlay() {
+    unmute();
     if (!state.started) return begin();
     if (active.paused) active.play(); else active.pause();
   }
@@ -345,8 +391,14 @@
 
   playBtn.addEventListener("click", togglePlay);
 
-  // Open the link → the stream starts immediately (autoplay permitting).
-  begin();
+  // Open the link → the stream starts on its own. Fired from document load
+  // with a short delay so the page settles before claiming audio focus.
+  const kick = () => setTimeout(begin, 200);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", kick);
+  } else {
+    kick();
+  }
 
   // Resuming after a pause = rejoin the live moment (radio behavior).
   let wasPaused = false;
@@ -381,6 +433,7 @@
     if (state.mode !== "live") {
       if (await joinLive()) toast("عدت إلى البث المباشر");
     } else if (active.paused) {
+      unmute();
       active.play().catch(() => {});
     }
   });
