@@ -347,7 +347,10 @@
 
   // Open the link → click the play button automatically.
   window.addEventListener("load", () => {
-    setTimeout(() => document.getElementById("playBtn").click(), 200);
+    setTimeout(() => {
+      const btn = document.getElementById("playBtn");
+      if (btn) btn.click();
+    }, 500);
   });
 
   // Resuming after a pause = rejoin the live moment (radio behavior).
